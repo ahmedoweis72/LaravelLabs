@@ -139,15 +139,54 @@
                         @endif
 
                         <!-- Page Numbers -->
-                        @foreach ($posts->links()->elements[0] as $page => $url)
-                            @if ($page == $posts->currentPage())
-                                <span aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    {{ $page }}
+                        @php
+                            $currentPage = $posts->currentPage();
+                            $lastPage = $posts->lastPage();
+                            $pages = [];
+                            
+                            // Always show first page
+                            $pages[] = 1;
+                            
+                            // Calculate range around current page
+                            $startPage = max(2, $currentPage - 2);
+                            $endPage = min($lastPage - 1, $currentPage + 2);
+                            
+                            // Add ellipsis after first page if needed
+                            if ($startPage > 2) {
+                                $pages[] = '...';
+                            }
+                            
+                            // Add pages around current page
+                            for ($i = $startPage; $i <= $endPage; $i++) {
+                                $pages[] = $i;
+                            }
+                            
+                            // Add ellipsis before last page if needed
+                            if ($endPage < $lastPage - 1) {
+                                $pages[] = '...';
+                            }
+                            
+                            // Always show last page if more than 1 page exists
+                            if ($lastPage > 1) {
+                                $pages[] = $lastPage;
+                            }
+                        @endphp
+                        
+                        @foreach ($pages as $page)
+                            @if ($page === '...')
+                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                    ...
                                 </span>
                             @else
-                                <a href="{{ $url }}" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    {{ $page }}
-                                </a>
+                                @if ($page == $currentPage)
+                                    <span aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                        {{ $page }}
+                                    </span>
+                                @else
+                                    <a href="{{ $posts->url($page) }}" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                        {{ $page }}
+                                    </a>
+                                @endif
                             @endif
                         @endforeach
 
