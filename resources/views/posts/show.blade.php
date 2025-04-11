@@ -10,6 +10,7 @@
                 </svg>
                 <span>{{ $post->user->name }}</span>
             </div>
+            <span class="h-5 w-5 mr-1 text-gray-600">{{ \Carbon\Carbon::parse($post->user->created_at)->diffForHumans() }}</span>
         </div>
     </div>
 

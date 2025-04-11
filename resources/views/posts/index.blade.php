@@ -63,7 +63,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $post->created_at->format('Y-m-d') }}</div>
-                                <div class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($post['created_at'])->diffForHumans() }}</div>
+                                <div class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="{{ route('posts.show', $post->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">

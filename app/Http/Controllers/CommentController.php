@@ -5,46 +5,63 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, $postId)
+    public function store(Request $request, Post $post)
     {
         $request->validate([
-            'body' => 'required|string'
+            'content' => 'required|string|min:3|max:1000'
+        ], [
+            'content.required' => 'Please provide some content for your comment',
+            'content.min' => 'Your comment should be at least 3 characters',
+            'content.max' => 'Your comment is too long (maximum 1000 characters)'
         ]);
-
-        $post = Post::findOrFail($postId);
         
         $post->comments()->create([
-            'body' => $request->body,
-            'user_id' => $request->user_id
+            'content' => $request->content,
+            'user_id' => Auth::id()
         ]);
 
-        return to_route('posts.show', $postId);
+        return redirect()->back();
     }
 
-    public function update(Request $request, $postId, $commentId)
+    public function update(Request $request, Post $post, $commentId)
     {
         $request->validate([
-            'body' => 'required|string'
+            'content' => 'required|string|min:3|max:1000'
+        ], [
+            'content.required' => 'Please provide some content for your comment',
+            'content.min' => 'Your comment should be at least 3 characters',
+            'content.max' => 'Your comment is too long (maximum 1000 characters)'
         ]);
 
         $comment = Comment::findOrFail($commentId);
         
+        // Check if user owns this comment
+        if ($comment->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'You are not authorized to edit this comment');
+        }
+        
         $comment->update([
-            'body' => $request->body
+            'content' => $request->content
         ]);
 
-        return to_route('posts.show', $postId);
+        return redirect()->back();
     }
 
-    public function destroy($postId, $commentId)
+    public function destroy(Post $post, $commentId)
     {
         $comment = Comment::findOrFail($commentId);
+        
+        // Check if user owns this comment
+        if ($comment->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'You are not authorized to delete this comment');
+        }
         
         $comment->delete();
         
-        return to_route('posts.show', $postId);
+        return redirect()->back();
     }
 }
