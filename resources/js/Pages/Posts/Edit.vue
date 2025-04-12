@@ -53,7 +53,7 @@ const removeImage = () => {
 };
 
 const submit = () => {
-    form.post(route('posts.update', props.post.id), {
+    form.post(route('posts.update', props.post.slug), {
         preserveScroll: true,
         forceFormData: true,
     });
@@ -194,7 +194,7 @@ const submit = () => {
                                     <button 
                                         v-if="hasExistingImage && !form.image && !imagePreview" 
                                         type="button" 
-                                        @click="form._method = 'PUT'; form.post(route('posts.update', props.post.id), { data: { remove_image: true }, preserveScroll: true })"
+                                        @click="form._method = 'PUT'; form.post(route('posts.update', props.post.slug), { data: { remove_image: true }, preserveScroll: true })"
                                         class="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

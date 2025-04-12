@@ -12,11 +12,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/posts', [PostController::class, 'index'])->middleware('auth:sanctum');
-Route::get('/posts/{slug}', [PostController::class, 'show'])->middleware('auth:sanctum');
-Route::post('/posts', [PostController::class, 'store'])->middleware('auth:sanctum');
-Route::put('/posts/{slug}', [PostController::class, 'update'])->middleware('auth:sanctum');
-Route::delete('/posts/{slug}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
+// API routes for posts
+Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'index']);
+    Route::get('/{slug}', [PostController::class, 'show']);
+    Route::post('/', [PostController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{slug}', [PostController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/{slug}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
+});
 
 Route::post('/sanctum/token', function (Request $request) {
     $request->validate([

@@ -51,6 +51,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Create Post
                                 </NavLink>
+                                <NavLink
+                                    :href="route('api.posts')"
+                                    :active="route().current('api.posts')"
+                                >
+                                    API Posts
+                                </NavLink>
                             </div>
                         </div>
 
@@ -169,6 +175,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('posts.create')"
                         >
                             Create Post
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('api.posts')"
+                            :active="route().current('api.posts')"
+                        >
+                            API Posts
                         </ResponsiveNavLink>
                     </div>
 

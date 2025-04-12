@@ -6,15 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with('user')->paginate(10);
+        // Get the per_page parameter from the request or default to 10
+        $perPage = $request->input('per_page', 10);
         
-        // Return a collection of posts as a resource
-        return  PostResource::collection($posts);
+        // Get posts with user relationship and paginate
+        $posts = Post::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+        
+        // Return a collection of posts as a resource with pagination metadata
+        return PostResource::collection($posts);
     }
 
     public function show($slug)
@@ -54,8 +61,12 @@ class PostController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
         $post = Post::where('slug', $slug)->firstOrFail();
+        if ($post->user_id !== Auth::id()) {
+            return response()->json(['error' => 'You are not authorized to edit this post'], 403);
+        }
+        
         $post->update($request->all());
-        return $post;
+        return response()->json($post, 200);
     }
 
     public function destroy($slug)

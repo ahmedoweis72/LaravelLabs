@@ -24,6 +24,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    // API Posts Example
+    Route::get('/api-posts', function () {
+        return Inertia::render('ApiPosts');
+    })->name('api.posts');
+
     // Posts
     Route::prefix('posts')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('posts.index');
